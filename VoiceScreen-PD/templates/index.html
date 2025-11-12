@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VoiceScreen PD | Parkinson's Detection</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <!-- App Container -->
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-content">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <i class="fas fa-wave-square"></i>
+                    </div>
+                    <div class="logo-text">
+                        <h1>VoiceScreen<span>PD</span></h1>
+                        <p>Early Detection System</p>
+                    </div>
+                </div>
+                <div class="header-actions">
+                    <button class="icon-btn" id="infoBtn">
+                        <i class="fas fa-info-circle"></i>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main App Area -->
+        <main class="app-main">
+            <!-- Progress Steps -->
+            <div class="progress-steps">
+                <div class="step active" data-step="1">
+                    <div class="step-number">1</div>
+                    <span>Record</span>
+                </div>
+                <div class="step" data-step="2">
+                    <div class="step-number">2</div>
+                    <span>Analyze</span>
+                </div>
+                <div class="step" data-step="3">
+                    <div class="step-number">3</div>
+                    <span>Results</span>
+                </div>
+            </div>
+
+            <!-- Recording Section -->
+            <section class="section recording-section active" id="recordSection">
+                <div class="section-header">
+                    <h2><i class="fas fa-microphone"></i> Voice Recording</h2>
+                    <p>Record your voice for analysis</p>
+                </div>
+
+                <div class="recording-card">
+                    <div class="instruction-box">
+                        <div class="instruction-icon">
+                            <i class="fas fa-volume-up"></i>
+                        </div>
+                        <div class="instruction-content">
+                            <h3>How to Record</h3>
+                            <ul>
+                                <li><i class="fas fa-check"></i> Find a quiet space</li>
+                                <li><i class="fas fa-check"></i> Hold phone 6-8 inches away</li>
+                                <li><i class="fas fa-check"></i> Say "Ahhh" for 3-5 seconds</li>
+                                <li><i class="fas fa-check"></i> Use normal speaking voice</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Visualizer -->
+                    <div class="visualizer-box">
+                        <div class="visualizer-header">
+                            <span>Live Sound Wave</span>
+                            <div class="recording-status" id="recordingStatus">
+                                <div class="status-dot"></div>
+                                <span>Ready</span>
+                            </div>
+                        </div>
+                        <canvas id="visualizer" width="400" height="80"></canvas>
+                    </div>
+
+                    <!-- Timer & Controls -->
+                    <div class="controls-box">
+                        <div class="timer" id="timer">
+                            <i class="fas fa-clock"></i>
+                            <span>00:00</span>
+                        </div>
+                        
+                        <div class="control-buttons">
+                            <button id="recordBtn" class="btn primary-btn large-btn">
+                                <i class="fas fa-microphone"></i>
+                                <span>Start Recording</span>
+                            </button>
+                            <button id="stopBtn" class="btn secondary-btn large-btn" disabled>
+                                <i class="fas fa-square"></i>
+                                <span>Stop</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Loading Section -->
+            <section class="section loading-section" id="loadingSection">
+                <div class="loading-content">
+                    <div class="loading-animation">
+                        <div class="loading-spinner"></div>
+                        <div class="loading-pulse"></div>
+                    </div>
+                    <h3>AI Analysis in Progress</h3>
+                    <p>Analyzing voice patterns and biomarkers...</p>
+                    
+                    <div class="analysis-steps">
+                        <div class="analysis-step active">
+                            <i class="fas fa-check"></i>
+                            <span>Audio Processing</span>
+                        </div>
+                        <div class="analysis-step">
+                            <i class="fas fa-waveform"></i>
+                            <span>Feature Extraction</span>
+                        </div>
+                        <div class="analysis-step">
+                            <i class="fas fa-brain"></i>
+                            <span>AI Analysis</span>
+                        </div>
+                        <div class="analysis-step">
+                            <i class="fas fa-chart-bar"></i>
+                            <span>Results</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Results Section -->
+            <section class="section results-section" id="resultsSection">
+                <div class="section-header">
+                    <h2><i class="fas fa-chart-line"></i> Analysis Results</h2>
+                    <p>Parkinson's Risk Assessment</p>
+                </div>
+
+                <!-- Risk Score Card -->
+                <div class="risk-score-card">
+                    <div class="risk-header">
+                        <h3>Overall Risk Score</h3>
+                        <div class="confidence">
+                            <i class="fas fa-shield-alt"></i>
+                            <span>Confidence: <strong id="confidence">85%</strong></span>
+                        </div>
+                    </div>
+                    
+                    <div class="risk-display">
+                        <div class="risk-circle">
+                            <div class="circle-bg"></div>
+                            <div class="circle-progress" id="circleProgress"></div>
+                            <div class="circle-text">
+                                <span class="risk-percent" id="riskScore">0</span>
+                                <span class="risk-label">% Risk</span>
+                            </div>
+                        </div>
+                        
+                        <div class="risk-level">
+                            <h4 id="riskText">Low Risk</h4>
+                            <p id="riskDescription">Minimal indicators detected</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Features Grid -->
+                <div class="features-card">
+                    <h3><i class="fas fa-sliders-h"></i> Voice Biomarkers</h3>
+                    <div class="features-grid" id="featuresGrid">
+                        <!-- Features will be populated here -->
+                    </div>
+                </div>
+
+                <!-- Recommendations -->
+                <div class="recommendations-card">
+                    <h3><i class="fas fa-stethoscope"></i> Recommendations</h3>
+                    <div class="rec-content">
+                        <p id="recommendationText">Based on your voice analysis, no immediate concerns detected. Continue regular health monitoring.</p>
+                        
+                        <div class="rec-actions">
+                            <button class="action-btn primary" id="saveReportBtn">
+                                <i class="fas fa-download"></i>
+                                Save Report
+                            </button>
+                            <button class="action-btn secondary" id="shareReportBtn">
+                                <i class="fas fa-share"></i>
+                                Share
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- New Test Button -->
+                <button id="newTestBtn" class="btn primary-btn full-width-btn">
+                    <i class="fas fa-redo"></i>
+                    Start New Test
+                </button>
+            </section>
+
+            <!-- History Section -->
+            <section class="section history-section" id="historySection">
+                <div class="section-header">
+                    <h2><i class="fas fa-history"></i> Test History</h2>
+                    <p>Your previous voice analysis results</p>
+                </div>
+
+                <div class="history-card">
+                    <div class="history-header">
+                        <h3>Previous Tests</h3>
+                        <button class="btn secondary-btn small-btn" id="clearHistoryBtn">
+                            <i class="fas fa-trash"></i>
+                            Clear All
+                        </button>
+                    </div>
+
+                    <div class="history-list" id="historyList">
+                        <!-- History items will be populated here -->
+                        <div class="empty-history">
+                            <i class="fas fa-clipboard-list"></i>
+                            <h4>No tests yet</h4>
+                            <p>Your test history will appear here after you complete voice analyses.</p>
+                        </div>
+                    </div>
+
+                    <div class="history-stats">
+                        <div class="stat-item">
+                            <span class="stat-value" id="totalTests">0</span>
+                            <span class="stat-label">Total Tests</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value" id="avgRisk">0%</span>
+                            <span class="stat-label">Average Risk</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value" id="lastTest">-</span>
+                            <span class="stat-label">Last Test</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Settings Section -->
+            <section class="section settings-section" id="settingsSection">
+                <div class="section-header">
+                    <h2><i class="fas fa-cog"></i> Settings</h2>
+                    <p>Customize your experience</p>
+                </div>
+
+                <div class="settings-card">
+                    <!-- Audio Settings -->
+                    <div class="settings-group">
+                        <h3><i class="fas fa-microphone"></i> Audio Settings</h3>
+                        
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <label for="audioQuality">Audio Quality</label>
+                                <p>Higher quality provides better analysis but uses more storage</p>
+                            </div>
+                            <select id="audioQuality" class="setting-control">
+                                <option value="low">Low (8kHz)</option>
+                                <option value="medium" selected>Medium (16kHz)</option>
+                                <option value="high">High (22kHz)</option>
+                            </select>
+                        </div>
+
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <label for="noiseReduction">Noise Reduction</label>
+                                <p>Reduce background noise for better analysis</p>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" id="noiseReduction" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <label for="autoStop">Auto Stop Recording</label>
+                                <p>Automatically stop recording after 10 seconds</p>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" id="autoStop" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Privacy Settings -->
+                    <div class="settings-group">
+                        <h3><i class="fas fa-shield-alt"></i> Privacy & Data</h3>
+                        
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <label for="saveHistory">Save Test History</label>
+                                <p>Store your test results locally for future reference</p>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" id="saveHistory" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <label for="exportData">Allow Data Export</label>
+                                <p>Enable exporting your test data for medical consultation</p>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" id="exportData" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <label for="analytics">Anonymous Analytics</label>
+                                <p>Help improve the app by sharing anonymous usage data</p>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" id="analytics">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Display Settings -->
+                    <div class="settings-group">
+                        <h3><i class="fas fa-palette"></i> Display</h3>
+                        
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <label for="theme">Theme</label>
+                                <p>Choose your preferred color theme</p>
+                            </div>
+                            <select id="theme" class="setting-control">
+                                <option value="light">Light</option>
+                                <option value="dark">Dark</option>
+                                <option value="auto">Auto (System)</option>
+                            </select>
+                        </div>
+
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <label for="fontSize">Font Size</label>
+                                <p>Adjust text size for better readability</p>
+                            </div>
+                            <select id="fontSize" class="setting-control">
+                                <option value="small">Small</option>
+                                <option value="medium" selected>Medium</option>
+                                <option value="large">Large</option>
+                            </select>
+                        </div>
+
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <label for="hapticFeedback">Haptic Feedback</label>
+                                <p>Vibrate on button presses (mobile only)</p>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" id="hapticFeedback" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="settings-actions">
+                        <button class="btn secondary-btn full-width-btn" id="resetSettingsBtn">
+                            <i class="fas fa-undo"></i>
+                            Reset to Defaults
+                        </button>
+                        <button class="btn primary-btn full-width-btn" id="saveSettingsBtn">
+                            <i class="fas fa-save"></i>
+                            Save Settings
+                        </button>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Bottom Navigation -->
+        <nav class="bottom-nav">
+            <button class="nav-item active" data-target="recordSection">
+                <i class="fas fa-microphone"></i>
+                <span>Record</span>
+            </button>
+            <button class="nav-item" data-target="resultsSection">
+                <i class="fas fa-chart-bar"></i>
+                <span>Results</span>
+            </button>
+            <button class="nav-item" data-target="historySection">
+                <i class="fas fa-history"></i>
+                <span>History</span>
+            </button>
+            <button class="nav-item" data-target="settingsSection">
+                <i class="fas fa-cog"></i>
+                <span>Settings</span>
+            </button>
+        </nav>
+
+        <!-- Info Modal -->
+        <div class="modal" id="infoModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>About VoiceScreen PD</h3>
+                    <button class="modal-close" id="closeModal">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>VoiceScreen PD uses advanced AI to analyze voice patterns for early detection of Parkinson's disease risk factors.</p>
+                    
+                    <div class="info-features">
+                        <div class="info-feature">
+                            <i class="fas fa-brain"></i>
+                            <span>Machine Learning</span>
+                        </div>
+                        <div class="info-feature">
+                            <i class="fas fa-shield-alt"></i>
+                            <span>Privacy First</span>
+                        </div>
+                        <div class="info-feature">
+                            <i class="fas fa-clock"></i>
+                            <span>Quick Results</span>
+                        </div>
+                    </div>
+
+                    <div class="disclaimer">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <p><strong>Disclaimer:</strong> This tool is for screening purposes only. Always consult healthcare professionals for medical diagnosis.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Toast Notifications -->
+        <div class="toast-container" id="toastContainer"></div>
+    </div>
+
+    <!-- JavaScript Files -->
+    <script src="{{ url_for('static', filename='js/recorder.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/visualizer.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
